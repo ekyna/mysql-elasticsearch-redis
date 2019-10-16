@@ -1,0 +1,80 @@
+version: '2.2'
+
+networks:
+    default:
+        external:
+            name: "${NETWORK_NAME}"
+
+volumes:
+    mysql:
+        external:
+            name: "${COMPOSE_PROJECT_NAME}-mysql"
+    elasticsearch:
+        external:
+            name: "${COMPOSE_PROJECT_NAME}-elasticsearch"
+#    redis:
+#        external:
+#            name: "${COMPOSE_PROJECT_NAME}-redis"
+
+services:
+    mysql:
+        container_name: "${COMPOSE_PROJECT_NAME}_mysql"
+        restart: always
+        image: mysql:8
+        cpus: 0.5
+        mem_limit: 768M
+        working_dir: /root
+        environment:
+            MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+        volumes:
+            - ./mysql/config.cnf:/etc/mysql/conf.d/custom.cnf:ro
+            - ./mysql/dump.sh:/dump.sh
+            - mysql:/var/lib/mysql:rw
+        logging:
+            driver: "json-file"
+            options: { max-size: "5m", max-file: "3" }
+        networks:
+            default:
+                aliases:
+                    - "mysql.${COMPOSE_PROJECT_NAME}"
+
+    elasticsearch:
+        container_name: "${COMPOSE_PROJECT_NAME}_elasticsearch"
+        restart: always
+        image: ekyna/elasticsearch:6.8.3
+        cpus: 0.5
+        mem_limit: 1G
+        volumes:
+            - elasticsearch:/usr/share/elasticsearch/data:rw
+        environment:
+            - discovery.type=single-node
+            - "cluster.name=${COMPOSE_PROJECT_NAME}-cluster"
+            - bootstrap.memory_lock=true
+            - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
+        logging:
+            driver: "json-file"
+            options: { max-size: "2m", max-file: "3" }
+        networks:
+            default:
+                aliases:
+                    - "elasticsearch.${COMPOSE_PROJECT_NAME}"
+
+#    redis:
+#        container_name: "${COMPOSE_PROJECT_NAME}_redis"
+#        restart: always
+#        image: redis:3.2.5-alpine
+#        cpus: 0.1
+#        mem_limit: 64M
+#        volumes:
+#            - redis:/data:rw
+#        logging:
+#            driver: "json-file"
+#            options: { max-size: "2m", max-file: "3" }
+#        networks:
+#            default:
+#                aliases:
+#                    - "redis.${COMPOSE_PROJECT_NAME}"
