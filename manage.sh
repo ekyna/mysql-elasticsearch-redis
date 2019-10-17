@@ -14,6 +14,8 @@ source ./.env
 source ./util.sh
 ClearLogs
 
+export MSYS_NO_PATHCONV=1
+
 # ----------------------------- INTERNAL -----------------------------
 
 DoCreateNetworkAndVolumes() {

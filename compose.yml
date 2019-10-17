@@ -22,7 +22,7 @@ services:
         restart: always
         image: mysql:8
         cpus: 0.5
-        mem_limit: 768M
+        mem_limit: 1G
         working_dir: /root
         environment:
             MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
