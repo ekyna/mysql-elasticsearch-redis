@@ -3,6 +3,8 @@
 if [[ -z ${COMPOSE_PROJECT_NAME+x} ]]; then printf "\e[31mThe 'COMPOSE_PROJECT_NAME' variable is not defined.\e[0m\n"; exit 1; fi
 if [[ -z ${NETWORK_NAME+x} ]]; then printf "\e[31mThe 'NETWORK_NAME' variable is not defined.\e[0m\n"; exit 1; fi
 if [[ -z ${MYSQL_ROOT_PASSWORD+x} ]]; then printf "\e[31mThe 'MYSQL_ROOT_PASSWORD' variable is not defined.\e[0m\n"; exit 1; fi
+if [[ -z ${MYSQL_PORT+x} ]]; then printf "\e[31mThe 'MYSQL_PORT' variable is not defined.\e[0m\n"; exit 1; fi
+if [[ -z ${PHPMYADMIN_PORT+x} ]]; then printf "\e[31mThe 'PHPMYADMIN_PORT' variable is not defined.\e[0m\n"; exit 1; fi
 
 LOG_PATH="./logs/docker.log"
 

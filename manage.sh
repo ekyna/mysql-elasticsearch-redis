@@ -3,7 +3,7 @@
 cd "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Check env file
-if [[ ! -f './.env' ]]
+if [[ ! -f ./.env ]]
 then
     printf "\e[31mEnv file not found\e[0m\n"
     exit 1;
@@ -14,7 +14,7 @@ source ./.env
 source ./util.sh
 ClearLogs
 
-export MSYS_NO_PATHCONV=1
+if [[ $(uname -s) = \MINGW* ]]; then export MSYS_NO_PATHCONV=1; fi
 
 # ----------------------------- INTERNAL -----------------------------
 
@@ -97,17 +97,10 @@ case $1 in
     *)
         Help "Usage: ./manage.sh [action] [options]
 
-  \e[0mup\e[2m                      Create network and volumes and start containers.
-  \e[0minit\e[2m                    Initialize the php service.
-  \e[0mupdate\e[2m                  Pull images, rebuild and restart containers.
-  \e[0mdown\e[2m                    Stop containers.
-  \e[0mreset\e[2m                   Recreate volumes and restart containers.
-  \e[0mclear\e[2m                   Stop containers and destroy the network and volumes.
-  \e[0mpurge\e[2m                   Purges all caches.
-  \e[0msf\e[2m command              Run the symfony <command> in the php container.
-  \e[0mbackup\e[2m                  Backup database and files.
-  \e[0mrestore\e[2m date            Restore the <date> backup database and files.
-  \e[0mremote-restore\e[2m date     Restore database and files from remote backup.
-  \e[0mtools\e[2m up|down           Start or stop tools containers."
+  \e[0mup\e[2m              Create network and volumes and start containers.
+  \e[0mdown\e[2m            Stop containers.
+  \e[0mreset\e[2m           Recreate volumes and restart containers.
+  \e[0mclear\e[2m           Stop containers and destroy the network and volumes.
+  \e[0mtools\e[2m up|down   Start or stop tools containers."
     ;;
 esac

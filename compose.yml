@@ -21,11 +21,13 @@ services:
         container_name: "${COMPOSE_PROJECT_NAME}_mysql"
         restart: always
         image: mysql:8
-        cpus: 0.5
+#        cpus: 0.5
         mem_limit: 1G
         working_dir: /root
         environment:
             MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+        ports:
+            - "${MYSQL_PORT}:3306"
         volumes:
             - ./mysql/config.cnf:/etc/mysql/conf.d/custom.cnf:ro
             - ./mysql/dump.sh:/dump.sh
@@ -42,8 +44,7 @@ services:
         container_name: "${COMPOSE_PROJECT_NAME}_elasticsearch"
         restart: always
         image: ekyna/elasticsearch:6.8.3
-        cpus: 0.5
-        mem_limit: 1G
+#        cpus: 0.5
         volumes:
             - elasticsearch:/usr/share/elasticsearch/data:rw
         environment:
