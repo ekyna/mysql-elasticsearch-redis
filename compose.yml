@@ -30,7 +30,6 @@ services:
             - "${MYSQL_PORT}:3306"
         volumes:
             - ./mysql/config.cnf:/etc/mysql/conf.d/custom.cnf:ro
-            - ./mysql/dump.sh:/dump.sh
             - mysql:/var/lib/mysql:rw
         logging:
             driver: "json-file"
@@ -63,6 +62,19 @@ services:
             default:
                 aliases:
                     - "elasticsearch.${COMPOSE_PROJECT_NAME}"
+
+    chrometopdf:
+        container_name: ${COMPOSE_PROJECT_NAME}_chrometopdf
+        image: ekyna/chrome-to-pdf:latest
+        environment:
+            AUTH_TOKEN: ${CHROME_TO_PDF_TOKEN}
+        logging:
+            driver: json-file
+            options: { max-size: "2m", max-file: "3" }
+        networks:
+            default:
+                aliases:
+                    - "chrometopdf.${COMPOSE_PROJECT_NAME}"
 
 #    redis:
 #        container_name: "${COMPOSE_PROJECT_NAME}_redis"
