@@ -65,6 +65,7 @@ services:
 
     chrometopdf:
         container_name: ${COMPOSE_PROJECT_NAME}_chrometopdf
+        restart: always
         image: ekyna/chrome-to-pdf:latest
         environment:
             AUTH_TOKEN: ${CHROME_TO_PDF_TOKEN}
