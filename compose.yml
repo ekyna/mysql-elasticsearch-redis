@@ -42,7 +42,7 @@ services:
     elasticsearch:
         container_name: "${COMPOSE_PROJECT_NAME}_elasticsearch"
         restart: always
-        image: ekyna/elasticsearch:6.8.3
+        image: ekyna/elasticsearch:6.8.10
 #        cpus: 0.5
         volumes:
             - elasticsearch:/usr/share/elasticsearch/data:rw
