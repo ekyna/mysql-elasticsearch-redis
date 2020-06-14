@@ -20,7 +20,7 @@ services:
     mysql:
         container_name: "${COMPOSE_PROJECT_NAME}_mysql"
         restart: always
-        image: mysql:8
+        image: ekyna/mysql:8
 #        cpus: 0.5
         mem_limit: 1G
         working_dir: /root
@@ -31,6 +31,10 @@ services:
         volumes:
             - ./mysql/config.cnf:/etc/mysql/conf.d/custom.cnf:ro
             - mysql:/var/lib/mysql:rw
+        healthcheck:
+            interval: 5s
+            timeout: 1s
+            retries: 3
         logging:
             driver: "json-file"
             options: { max-size: "5m", max-file: "3" }
@@ -55,6 +59,10 @@ services:
             memlock:
                 soft: -1
                 hard: -1
+        healthcheck:
+            interval: 5s
+            timeout: 1s
+            retries: 3
         logging:
             driver: "json-file"
             options: { max-size: "2m", max-file: "3" }
@@ -72,6 +80,10 @@ services:
         logging:
             driver: json-file
             options: { max-size: "2m", max-file: "3" }
+        healthcheck:
+            interval: 5s
+            timeout: 1s
+            retries: 3
         networks:
             default:
                 aliases:
