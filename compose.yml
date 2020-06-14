@@ -32,9 +32,10 @@ services:
             - ./mysql/config.cnf:/etc/mysql/conf.d/custom.cnf:ro
             - mysql:/var/lib/mysql:rw
         healthcheck:
-            interval: 5s
-            timeout: 1s
+            interval: 10s
+            timeout: 2s
             retries: 3
+            start_period: 30s
         logging:
             driver: "json-file"
             options: { max-size: "5m", max-file: "3" }
@@ -60,9 +61,10 @@ services:
                 soft: -1
                 hard: -1
         healthcheck:
-            interval: 5s
-            timeout: 1s
+            interval: 10s
+            timeout: 2s
             retries: 3
+            start_period: 30s
         logging:
             driver: "json-file"
             options: { max-size: "2m", max-file: "3" }
@@ -81,9 +83,10 @@ services:
             driver: json-file
             options: { max-size: "2m", max-file: "3" }
         healthcheck:
-            interval: 5s
-            timeout: 1s
+            interval: 10s
+            timeout: 2s
             retries: 3
+            start_period: 10s
         networks:
             default:
                 aliases:
