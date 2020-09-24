@@ -27,7 +27,6 @@ services:
         ports:
             - "${MYSQL_PORT}:3306"
         volumes:
-            - ./mysql/config.cnf:/etc/mysql/conf.d/custom.cnf:ro
             - mysql:/var/lib/mysql:rw
         healthcheck:
             interval: 10s
