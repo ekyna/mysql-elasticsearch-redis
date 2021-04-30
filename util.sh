@@ -2,9 +2,11 @@
 
 if [[ -z ${COMPOSE_PROJECT_NAME+x} ]]; then printf "\e[31mThe 'COMPOSE_PROJECT_NAME' variable is not defined.\e[0m\n"; exit 1; fi
 if [[ -z ${NETWORK_NAME+x} ]]; then printf "\e[31mThe 'NETWORK_NAME' variable is not defined.\e[0m\n"; exit 1; fi
+if [[ -z ${MYSQL_VERSION+x} ]]; then printf "\e[31mThe 'MYSQL_VERSION' variable is not defined.\e[0m\n"; exit 1; fi
 if [[ -z ${MYSQL_ROOT_PASSWORD+x} ]]; then printf "\e[31mThe 'MYSQL_ROOT_PASSWORD' variable is not defined.\e[0m\n"; exit 1; fi
 if [[ -z ${MYSQL_PORT+x} ]]; then printf "\e[31mThe 'MYSQL_PORT' variable is not defined.\e[0m\n"; exit 1; fi
 if [[ -z ${PHPMYADMIN_PORT+x} ]]; then printf "\e[31mThe 'PHPMYADMIN_PORT' variable is not defined.\e[0m\n"; exit 1; fi
+if [[ -z ${ELASTICSEARCH_VERSION+x} ]]; then printf "\e[31mThe 'ELASTICSEARCH_VERSION' variable is not defined.\e[0m\n"; exit 1; fi
 if [[ -z ${CHROME_TO_PDF_TOKEN+x} ]]; then printf "\e[31mThe 'CHROME_TO_PDF_TOKEN' variable is not defined.\e[0m\n"; exit 1; fi
 
 LOG_PATH="./logs/docker.log"
@@ -12,27 +14,27 @@ LOG_PATH="./logs/docker.log"
 # ----------------------------- HEADER -----------------------------
 
 Title() {
-    printf "\n\e[1;46m ----- $1 ----- \e[0m\n"
+    printf "\n\e[1;46m ----- %s ----- \e[0m\n" "$1"
 }
 
 Success() {
-    printf "\e[32m$1\e[0m\n"
+    printf "\e[32m%s\e[0m\n" "$1"
 }
 
 Error() {
-    printf "\e[31m$1\e[0m\n"
+    printf "\e[31m%s\e[0m\n" "$1"
 }
 
 Warning() {
-    printf "\e[31;43m$1\e[0m\n"
+    printf "\e[31;43m%s\e[0m\n" "$1"
 }
 
 Comment() {
-    printf "\e[36m$1\e[0m\n"
+    printf "\e[36m%s\e[0m\n" "$1"
 }
 
 Help() {
-    printf "\e[2m$1\e[0m\n"
+    printf "\e[2m%s\e[0m\n" "$1"
 }
 
 Ln() {
@@ -57,7 +59,7 @@ Confirm () {
     do
         printf "Do you want to continue ? (N/Y)"
         read choice
-        choice=$(echo ${choice} | tr '[:upper:]' '[:lower:]')
+        choice=$(echo "${choice}" | tr '[:upper:]' '[:lower:]')
     done
 
     if [[ "$choice" = "n" ]]; then
@@ -75,7 +77,7 @@ ClearLogs() {
 # ----------------------------- NETWORK -----------------------------
 
 NetworkExists() {
-    if [[ "$(docker network ls --format '{{.Name}}' | grep $1\$)" ]]
+    if docker network ls --format '{{.Name}}' | grep -q "$1\$"
     then
         return 0
     fi
@@ -83,10 +85,10 @@ NetworkExists() {
 }
 
 NetworkCreate() {
-    printf "Creating network \e[1;33m$1\e[0m ... "
-    if ! NetworkExists $1
+    printf "Creating network \e[1;33m%s\e[0m ... " "$1"
+    if ! NetworkExists "$1"
     then
-        docker network create $1 >> ${LOG_PATH} 2>&1
+        docker network create "$1" >> ${LOG_PATH} 2>&1
         if [[ $? -eq 0 ]]
         then
             Success "created"
@@ -100,10 +102,10 @@ NetworkCreate() {
 }
 
 NetworkRemove() {
-    printf "Removing network \e[1;33m$1\e[0m ... "
-    if NetworkExists $1
+    printf "Removing network \e[1;33m%s\e[0m ... " "$1"
+    if NetworkExists "$1"
     then
-        docker network rm $1 >> ${LOG_PATH} 2>&1
+        docker network rm "$1" >> ${LOG_PATH} 2>&1
         if [[ $? -eq 0 ]]
         then
             Success "removed"
@@ -119,7 +121,7 @@ NetworkRemove() {
 # ----------------------------- VOLUME -----------------------------
 
 VolumeExists() {
-    if [[ "$(docker volume ls --format '{{.Name}}' | grep $1\$)" ]]
+    if docker volume ls --format '{{.Name}}' | grep -q "$1\$"
     then
         return 0
     fi
@@ -127,10 +129,10 @@ VolumeExists() {
 }
 
 VolumeCreate() {
-    printf "Creating volume \e[1;33m$1\e[0m ... "
+    printf "Creating volume \e[1;33m%s\e[0m ... " "$1"
     if ! VolumeExists $1
     then
-        docker volume create --name $1 >> ${LOG_PATH} 2>&1
+        docker volume create --name "$1" >> ${LOG_PATH} 2>&1
         if [[ $? -eq 0 ]]
         then
             Success "created"
@@ -144,10 +146,10 @@ VolumeCreate() {
 }
 
 VolumeRemove() {
-    printf "Removing volume \e[1;33m$1\e[0m ... "
-    if VolumeExists $1
+    printf "Removing volume \e[1;33m%s\e[0m ... " "$1"
+    if VolumeExists "$1"
     then
-        docker volume rm $1 >> ${LOG_PATH} 2>&1
+        docker volume rm "$1" >> ${LOG_PATH} 2>&1
         if [[ $? -eq 0 ]]
         then
             Success "removed"
@@ -163,7 +165,7 @@ VolumeRemove() {
 # ----------------------------- COMPOSE -----------------------------
 
 IsUpAndRunning() {
-    if [[ "$(docker ps --format '{{.Names}}' | grep ${COMPOSE_PROJECT_NAME}_$1\$)" ]]
+    if docker ps --format '{{.Names}}' | grep -q "${COMPOSE_PROJECT_NAME}_$1\$"
     then
         return 0
     fi

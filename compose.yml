@@ -3,31 +3,31 @@ version: '3.4'
 networks:
     default:
         external:
-            name: "${NETWORK_NAME}"
+            name: ${NETWORK_NAME}
 
 volumes:
     mysql:
         external:
-            name: "${COMPOSE_PROJECT_NAME}-mysql"
+            name: ${COMPOSE_PROJECT_NAME}-mysql
     elasticsearch:
         external:
-            name: "${COMPOSE_PROJECT_NAME}-elasticsearch"
+            name: ${COMPOSE_PROJECT_NAME}-elasticsearch
 #    redis:
 #        external:
-#            name: "${COMPOSE_PROJECT_NAME}-redis"
+#            name: ${COMPOSE_PROJECT_NAME}-redis
 
 services:
     mysql:
-        container_name: "${COMPOSE_PROJECT_NAME}_mysql"
+        container_name: ${COMPOSE_PROJECT_NAME}_mysql
         restart: always
-        image: ekyna/mysql:8
+        image: ekyna/mysql:${MYSQL_VERSION}
         working_dir: /root
         environment:
-            MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
         cap_add:
             - SYS_NICE
         ports:
-            - "${MYSQL_PORT}:3306"
+            - ${MYSQL_PORT}:3306
         volumes:
             - mysql:/var/lib/mysql:rw
         healthcheck:
@@ -41,19 +41,20 @@ services:
         networks:
             default:
                 aliases:
-                    - "mysql.${COMPOSE_PROJECT_NAME}"
+                    - mysql.${COMPOSE_PROJECT_NAME}
 
     elasticsearch:
-        container_name: "${COMPOSE_PROJECT_NAME}_elasticsearch"
+        container_name: ${COMPOSE_PROJECT_NAME}_elasticsearch
         restart: always
-        image: ekyna/elasticsearch:6.8.10
+        image: ekyna/elasticsearch:${ELASTICSEARCH_VERSION}
         volumes:
             - elasticsearch:/usr/share/elasticsearch/data:rw
         environment:
+            - cluster.name=${COMPOSE_PROJECT_NAME}-cluster
             - discovery.type=single-node
-            - "cluster.name=${COMPOSE_PROJECT_NAME}-cluster"
+            - xpack.security.enabled=false
             - bootstrap.memory_lock=true
-            - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+            - ES_JAVA_OPTS=-Xms512m -Xmx512m -Des.enforce.bootstrap.checks=true
         cap_add:
             - IPC_LOCK
         ulimits:
@@ -74,7 +75,7 @@ services:
         networks:
             default:
                 aliases:
-                    - "elasticsearch.${COMPOSE_PROJECT_NAME}"
+                    - elasticsearch.${COMPOSE_PROJECT_NAME}
 
     chrometopdf:
         container_name: ${COMPOSE_PROJECT_NAME}_chrometopdf
@@ -93,10 +94,10 @@ services:
         networks:
             default:
                 aliases:
-                    - "chrometopdf.${COMPOSE_PROJECT_NAME}"
+                    - chrometopdf.${COMPOSE_PROJECT_NAME}
 
 #    redis:
-#        container_name: "${COMPOSE_PROJECT_NAME}_redis"
+#        container_name: ${COMPOSE_PROJECT_NAME}_redis
 #        restart: always
 #        image: redis:3.2.5-alpine
 #        volumes:
@@ -107,4 +108,4 @@ services:
 #        networks:
 #            default:
 #                aliases:
-#                    - "redis.${COMPOSE_PROJECT_NAME}"
+#                    - redis.${COMPOSE_PROJECT_NAME}

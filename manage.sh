@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" || exit
 
 # Check env file
 if [[ ! -f ./.env ]]
@@ -14,7 +14,7 @@ source ./.env
 source ./util.sh
 ClearLogs
 
-if [[ $(uname -s) = \MINGW* ]]; then export MSYS_NO_PATHCONV=1; fi
+if [[ $(uname -s) = MINGW* ]]; then export MSYS_NO_PATHCONV=1; fi
 
 # ----------------------------- INTERNAL -----------------------------
 
