@@ -22,14 +22,14 @@ DoCreateNetworkAndVolumes() {
     NetworkCreate "${NETWORK_NAME}"
     VolumeCreate "${COMPOSE_PROJECT_NAME}-mysql"
     VolumeCreate "${COMPOSE_PROJECT_NAME}-elasticsearch"
-#    VolumeCreate "${COMPOSE_PROJECT_NAME}-redis"
+    VolumeCreate "${COMPOSE_PROJECT_NAME}-redis"
 }
 
 DoRemoveNetworkAndVolumes() {
     #NetworkRemove "${NETWORK_NAME}-network"
     VolumeRemove "${COMPOSE_PROJECT_NAME}-mysql"
     VolumeRemove "${COMPOSE_PROJECT_NAME}-elasticsearch"
-#    VolumeRemove "${COMPOSE_PROJECT_NAME}-redis"
+    VolumeRemove "${COMPOSE_PROJECT_NAME}-redis"
 }
 
 # ----------------------------- EXEC -----------------------------

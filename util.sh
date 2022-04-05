@@ -8,6 +8,7 @@ if [[ -z ${MYSQL_PORT+x} ]]; then printf "\e[31mThe 'MYSQL_PORT' variable is not
 if [[ -z ${PHPMYADMIN_PORT+x} ]]; then printf "\e[31mThe 'PHPMYADMIN_PORT' variable is not defined.\e[0m\n"; exit 1; fi
 if [[ -z ${ELASTICSEARCH_VERSION+x} ]]; then printf "\e[31mThe 'ELASTICSEARCH_VERSION' variable is not defined.\e[0m\n"; exit 1; fi
 if [[ -z ${CHROME_TO_PDF_TOKEN+x} ]]; then printf "\e[31mThe 'CHROME_TO_PDF_TOKEN' variable is not defined.\e[0m\n"; exit 1; fi
+if [[ -z ${REDIS_VERSION+x} ]]; then printf "\e[31mThe 'REDIS_VERSION' variable is not defined.\e[0m\n"; exit 1; fi
 
 LOG_PATH="./logs/docker.log"
 
@@ -180,7 +181,7 @@ ComposeUp() {
 
 ComposeDown() {
     printf "Composing \e[1;33mDown\e[0m ... "
-    docker-compose -f compose.yml down -v --remove-orphans >> ${LOG_PATH} 2>&1
+    docker-compose -f compose.yml down --remove-orphans >> ${LOG_PATH} 2>&1
     DoneOrError $?
 }
 

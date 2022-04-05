@@ -12,9 +12,9 @@ volumes:
     elasticsearch:
         external:
             name: ${COMPOSE_PROJECT_NAME}-elasticsearch
-#    redis:
-#        external:
-#            name: ${COMPOSE_PROJECT_NAME}-redis
+    redis:
+        external:
+            name: ${COMPOSE_PROJECT_NAME}-redis
 
 services:
     mysql:
@@ -96,16 +96,16 @@ services:
                 aliases:
                     - chrometopdf.${COMPOSE_PROJECT_NAME}
 
-#    redis:
-#        container_name: ${COMPOSE_PROJECT_NAME}_redis
-#        restart: always
-#        image: redis:3.2.5-alpine
-#        volumes:
-#            - redis:/data:rw
-#        logging:
-#            driver: "json-file"
-#            options: { max-size: "2m", max-file: "3" }
-#        networks:
-#            default:
-#                aliases:
-#                    - redis.${COMPOSE_PROJECT_NAME}
+    redis:
+        container_name: ${COMPOSE_PROJECT_NAME}_redis
+        restart: always
+        image: redis:${REDIS_VERSION}
+        volumes:
+            - redis:/data:rw
+        logging:
+            driver: "json-file"
+            options: { max-size: "2m", max-file: "3" }
+        networks:
+            default:
+                aliases:
+                    - redis.${COMPOSE_PROJECT_NAME}
