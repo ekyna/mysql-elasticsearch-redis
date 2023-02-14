@@ -23,6 +23,7 @@ services:
         image: ekyna/mysql:${MYSQL_VERSION}
         working_dir: /root
         environment:
+            TZ: ${TIMEZONE}
             MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
         cap_add:
             - SYS_NICE
@@ -50,6 +51,7 @@ services:
         volumes:
             - elasticsearch:/usr/share/elasticsearch/data:rw
         environment:
+            - TZ=${TIMEZONE}
             - cluster.name=${COMPOSE_PROJECT_NAME}-cluster
             - discovery.type=single-node
             - xpack.security.enabled=false
@@ -82,6 +84,7 @@ services:
         restart: always
         image: ekyna/chrome-to-pdf:latest
         environment:
+            TZ: ${TIMEZONE}
             AUTH_TOKEN: ${CHROME_TO_PDF_TOKEN}
         logging:
             driver: json-file
@@ -100,6 +103,8 @@ services:
         container_name: ${COMPOSE_PROJECT_NAME}_redis
         restart: always
         image: redis:${REDIS_VERSION}
+        environment:
+            TZ: ${TIMEZONE}
         volumes:
             - redis:/data:rw
         logging:
